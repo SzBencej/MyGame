@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraMoveScript : MonoBehaviour {
 
-	public float camMoveSpeed;
+	private float camMoveSpeed;
 	private Camera cam;
 
 	enum Direction { None, Up, Down, Left, Right };
@@ -16,6 +16,7 @@ public class CameraMoveScript : MonoBehaviour {
 		if (cam == null) {
 			cam = Camera.main;
 		}
+        camMoveSpeed = 20;
 		Vector3 upperCorner = new Vector3 (Screen.width, Screen.height, 0.0f);
 		Vector3 WidthAndHeight = cam.ScreenToWorldPoint (upperCorner);
 		width = WidthAndHeight.x;

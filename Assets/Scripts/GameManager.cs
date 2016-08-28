@@ -11,8 +11,6 @@ public class GameManager : MonoBehaviour {
 	private GameModel gameModel;
 	private Text resourceText;
 
-	//private BoardManager boardManager;
-
 	void Awake() {
 		if (instance == null) {
 			instance = this;
@@ -26,7 +24,6 @@ public class GameManager : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 		gameModel = new GameModel ();
 		resourceText = GameObject.Find ("ResourceText").GetComponent<Text>();
-		//boardManager = new BoardManager ();
 	}
 
 	// Use this for initialization

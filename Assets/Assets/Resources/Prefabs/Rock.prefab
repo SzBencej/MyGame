@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 444878}
   - 212: {fileID: 21290100}
   - 58: {fileID: 5885358}
+  - 114: {fileID: 11439788}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -44,6 +45,17 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.44811112
+--- !u!114 &11439788
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 105058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e6f82df9ad539d4484c43e9ac346c1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &21290100
 SpriteRenderer:
   m_ObjectHideFlags: 1
