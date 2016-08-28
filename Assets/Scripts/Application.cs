@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Assertions;
 
 public class Application : MonoBehaviour {
 
@@ -9,6 +10,8 @@ public class Application : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
+        Assert.IsNotNull(eventSystem); // TODO: dynamic insert
+        Assert.IsNotNull(canvas);
 		Instantiate (eventSystem);
 		Instantiate (canvas); // TODO: make canvas the child of camera
 		//canvas.transform.parent = transform;
