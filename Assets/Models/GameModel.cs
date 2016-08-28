@@ -35,6 +35,11 @@ public class GameModel {
 		buildingDepTree.SetAvailable(building.GetBuildingID(), true);
 	}
 
+    public void Decrease (Resource other)
+    {
+        resources.Decrease(other);
+    }
+
 	public Resource GetResource() {
 		return resources;
 	}

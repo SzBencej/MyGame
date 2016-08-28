@@ -63,6 +63,11 @@ public class GameManager : MonoBehaviour {
 		gameModel.AddBuilding(gameObject.GetComponent<BuildingScript> ().building);
 	}
 
+    public void DecreaseResource(Resource other)
+    {
+        gameModel.Decrease(other);
+    }
+
 	public bool Affordable(Resource other) {
 		return gameModel.Affordable(other);
 	}
