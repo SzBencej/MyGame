@@ -60,6 +60,11 @@ public class GameManager : MonoBehaviour {
 		gameModel.AddBuilding(gameObject.GetComponent<BuildingScript> ().building);
 	}
 
+    public void RemoveBuilding(GameObject gameObject)
+    {
+        gameModel.RemoveBuilding(gameObject.GetComponent<BuildingScript>().building);
+    }
+
     public void DecreaseResource(Resource other)
     {
         gameModel.Decrease(other);

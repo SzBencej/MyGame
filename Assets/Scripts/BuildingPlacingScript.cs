@@ -18,7 +18,7 @@ public class BuildingPlacingScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	// Onescape  remove dragging and remove building
+	// onright click  remove dragging and remove building
 	void Update () {
 		if (dragged) {
 			Vector3 position = cam.ScreenToWorldPoint (Input.mousePosition); // TODO: utility
@@ -29,7 +29,11 @@ public class BuildingPlacingScript : MonoBehaviour {
 				dragged = false;
 				placeable = false;
 				GameManager.instance.AddBuilding (gameObject);
-			}
+                gameObject.GetComponent<BuildingScript>().Placed = true;
+			} else if (placeable && Input.GetMouseButtonUp(1))
+            {
+                Destroy(gameObject);
+            }
 		}
 	}
 

@@ -5,19 +5,25 @@ public class GameModel {
 	
 	private List<Building> buildings;
 	private Resource resources;
-	private GraphNode buildingDepTree;
+	public GraphNode BuildingDepTree { get; set; }
 
 	public GameModel () {
 		buildings = new List<Building> ();
-		buildingDepTree = new GraphNode (1);
-		GraphNode node = buildingDepTree.AddChild (2);
-		node.AddChild (3);
+        InitBuildingDepTree();
 		InitResources ();
 	}
 
 	private void InitResources() {
 		resources = new Resource ();
 	}
+
+    private void InitBuildingDepTree()
+    {
+        BuildingDepTree = new GraphNode(1, true);
+        GraphNode node = BuildingDepTree.AddChild(2);
+        node.AddChild(3);
+    }
+
 
 	public void NextRound() {
 		resources.Gold += 1;
@@ -32,8 +38,14 @@ public class GameModel {
 	public void AddBuilding(Building building) { 
 		buildings.Add (building);
 		resources.Decrease (building.GetCost ());
-		buildingDepTree.SetAvailable(building.GetBuildingID(), true);
+		BuildingDepTree.SetAvailable(building.GetBuildingID(), true);
 	}
+
+    public void RemoveBuilding(Building building)
+    {
+        buildings.Remove(building);
+        BuildingDepTree.SetAvailable(building.GetBuildingID(), false);
+    }
 
     public void Decrease (Resource other)
     {
@@ -53,7 +65,7 @@ public class GameModel {
 	}
 
 	public bool IsAvailable(int buildingID) {
-		return buildingDepTree.IsAvailable (buildingID);
+		return BuildingDepTree.IsAvailable (buildingID);
 	}
 }
 
