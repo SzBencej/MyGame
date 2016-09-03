@@ -5,7 +5,7 @@ public class GameModel {
 	
 	private List<Building> buildings;
 	private Resource resources;
-	public GraphNode BuildingDepTree { get; set; }
+	public Graph BuildingDepTree { get; set; }
 
 	public GameModel () {
 		buildings = new List<Building> ();
@@ -17,11 +17,13 @@ public class GameModel {
 		resources = new Resource ();
 	}
 
+    // Assume that at the start of the game every building is added to the tree
     private void InitBuildingDepTree()
     {
-        BuildingDepTree = new GraphNode(1, true);
-        GraphNode node = BuildingDepTree.AddChild(2);
-        node.AddChild(3);
+        BuildingDepTree = new Graph();
+        BuildingDepTree.AddChild(0, 1);
+        BuildingDepTree.AddChild(1, 2);
+        BuildingDepTree.AddChild(2, 3);
     }
 
 

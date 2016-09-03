@@ -1,78 +1,139 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-public class GraphNode
+public class Graph
 {
-	private int value;
-	private bool available;
-    private bool standard;
-	private List<GraphNode> children;
-	private List<GraphNode> parents;
-
-    public GraphNode() { }
-    public GraphNode(int value, bool standard = false) {
-		this.value = value;
-		children = new List<GraphNode> ();
-		parents = new List<GraphNode> ();
-		available = true;
-        this.standard = standard;
-	}
-
-	public GraphNode(int value, GraphNode parent) {
-		this.value = value;
-		children = new List<GraphNode> ();
-		parents = new List<GraphNode> ();
-		parents.Add (parent);
-        parent.children.Add(this);
-		available = false;
-	}
-
-	public GraphNode AddChild(int value) {
-		GraphNode child = new GraphNode(value, this);
-		return child;
-	}
-
-	//Recursive availability set
-	public void SetAvailable(int Id, bool available) {
-		//TODO: erorr if no id found
-		//Find recursively Id node
-		if (Id != value && Id != 0) { //TODO: 0 is extermal
-			foreach (GraphNode child in children) {
-				child.SetAvailable (Id, available);
-			}
-			return;
-		}
-		if (available) {
-			this.available = available; // true
-			foreach (GraphNode parent in parents) {
-				this.available = this.available && parent.available;
-			}
-		} else {
-			this.available = available || standard; // false
-		}
-		// Recursively to children one level
-		if (Id != 0) {
-			foreach (GraphNode child in children) {
-				child.SetAvailable (0, available);
-			}
-		}
-	}
-
-	public bool IsAvailable(int Id) {
-		if (Id != value) { //TODO: 0 is extermal
-			foreach (GraphNode child in children) {
-                Boolean? result = child.IsAvailable (Id);
-                if (result != null)
-                {
-                    return (bool)result;
-                }
-			}
-		}
-        if (Id == value)
+    GraphNode RootNode { get; set; }
+    public Graph() { 
+        RootNode = new GraphNode();
+    }
+    private GraphNode FindNode(int value, GraphNode origin)
+    {
+        GraphNode n = origin;
+        bool found = false;
+        while (!found)
         {
-            // TODO: erro if no id found
-            return available;
+            if (n.Value == value)
+            {
+                return n;
+            }else
+            {
+                foreach(GraphNode child in n.Children)
+                {
+                    GraphNode n2 = FindNode(value, child);
+                    if (n2 != null) { return n2; }
+                }
+                return null;
+            }
         }
-        return false; // null if no found
-	}
+        return n;
+    }
+    public void AddChild(int parent, int value)
+    {
+        GraphNode parentNode = FindNode(parent, RootNode);
+        if (parentNode == null)
+        {
+            throw new System.ArgumentException("The node with parent does not exists in AddChild call");
+        }
+        GraphNode child = FindNode(value, RootNode);
+        if (child == null)
+        {
+            child = new GraphNode(value, parentNode.Parents.Count == 0);
+        }
+
+        if (!parentNode.Children.Exists(x => x == child))
+        {
+            parentNode.Children.Add(child);
+        }
+        if (!child.Parents.Exists(x => x == parentNode))
+        {
+            child.Parents.Add(parentNode);
+        }
+    }
+
+    public bool IsAvailable(int id)
+    {
+        GraphNode n = FindNode(id, RootNode);
+        if (n == null)
+        {
+            throw new System.ArgumentException("The node with id does not exists in IsAvailable call");
+        }
+        return (n.Available) || n.Standard;
+    }
+
+    public void SetAvailable(int id, bool available)
+    {   // Find the node
+        GraphNode n = FindNode(id, RootNode);
+        if (n == null)
+        {
+            throw new System.ArgumentException("The node with id does not exists in SetAvailable call");
+        }
+        if (available)
+        {
+            // We are available if every parent is too
+            n.Available = n.Parents.All(x => x.Available);
+            n.Count++;
+        } else
+        {
+            n.Available = n.Standard || (n.Parents.All(x => x.Available) && n.Parents.All(x => x.Count > 0));
+            n.Count--;
+        }
+        // Recursive children availablility set
+        Action<GraphNode> recurse = null;
+        recurse = new Action<GraphNode>((node) =>
+        {
+            // Cannot be circular dependency
+            foreach (GraphNode c in node.Children)
+            {
+                c.Available = c.Parents.All(x => x.Available) && c.Parents.All(x => x.Count > 0);
+                    recurse(c);
+            }
+        });
+        recurse(n);
+    }
+
+
+class GraphNode
+{
+
+    public int Value { get; set; }
+    public bool Available { get; set; }
+    public bool Standard { get; set; }
+    public List<GraphNode> Children { get; set; }
+    public List<GraphNode> Parents { get; set; }
+    public int Count
+        {
+            get { return count; }
+            set
+            {
+                count = value; if (count < 0)
+                {
+                    throw new ArgumentException("Building count is less than 0");
+                }
+            }
+        }
+        private int count;
+
+        public GraphNode()
+    { // The root node
+        this.Value = 0;
+        Children = new List<GraphNode>();
+        Parents = new List<GraphNode>();
+        Available = true;
+        this.Standard = true;
+            count = 0;
+    }
+    public GraphNode(int value, bool standard)
+    {
+        this.Value = value;
+        Children = new List<GraphNode>();
+        Parents = new List<GraphNode>();
+        Available = false;
+        Standard = standard;
+            count = 0;
+    }
 }
+
+}
+
