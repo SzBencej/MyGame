@@ -24,7 +24,7 @@ public class BuildButtonScript : MonoBehaviour {
 		if (GameManager.instance.Affordable (buildingClass.GetCost ()) &&
 			GameManager.instance.IsAvailable(buildingID)) {
 			building = Instantiate (building, position, Quaternion.identity) as GameObject;
-			building.GetComponent<BuildingScript> ().building = buildingClass;
+            building.GetComponent<BuildingScript>().SetBuilding(buildingClass);
 		}
 	}
 }

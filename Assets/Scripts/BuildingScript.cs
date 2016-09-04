@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+using Assets.Models;
+using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class BuildingScript : MonoBehaviour {
 
 	public Building building;
+    private List<Tuple<string, UnityAction>> actions;
     public bool Placed { set; get; }
 
 	public Resource GetCost() {
@@ -28,12 +34,7 @@ public class BuildingScript : MonoBehaviour {
                 }
                 else
                 {
-                    if (GameManager.instance.Affordable(building.GetCost()))
-                    {
-                        GameManager.instance.DecreaseResource(building.GetCost());
-                        GameManager.instance.RemoveBuilding(gameObject);
-                        Destroy(gameObject);
-                    }
+                    DestroyBuilding();
                 }
             }
             else if (Input.GetMouseButtonDown(1)) // Right click
@@ -41,8 +42,63 @@ public class BuildingScript : MonoBehaviour {
                 Color c = gameObject.GetComponent<Renderer>().material.color;
                 c.a = 1.0f;
                 gameObject.GetComponent<Renderer>().material.color = c;
+                SetRightClickPanel(true);
             }
 
+        }
+    }
+
+    private void DestroyBuilding()
+    {
+        if (GameManager.instance.Affordable(building.GetCost()))
+        {
+            SetRightClickPanel(false);
+            GameManager.instance.DecreaseResource(building.GetCost());
+            GameManager.instance.RemoveBuilding(gameObject);
+            Destroy(gameObject);
+        }
+    }
+
+    internal void SetBuilding(Building buildingClass)
+    {
+        actions = new List<Tuple<string, UnityAction>>();
+        building = buildingClass;
+        foreach(string act in building.GetActions())
+        {
+            switch (act)
+            {
+                case "Destroy":
+                    {
+                        UnityAction action = delegate ()
+                        {
+                            DestroyBuilding();
+                        };
+                        actions.Add(new Tuple<string, UnityAction>(act, action));
+                        break;
+            }
+            default:
+                    throw new Exception("Not handled case in SetBuilding");
+            }
+        }
+    }
+
+    private void SetRightClickPanel(bool visible)
+    {
+        GameObject panel = GameManager.instance.GetCanvas().GetComponentInChildren<Transform>().Find("BuildingRightClickPanel").gameObject;
+        if (!visible)
+        {
+           panel.SetActive(false);
+            panel.GetComponent<CanvasRenderer>().SetAlpha(0f);
+        } else
+        {
+            panel.SetActive(true);
+            panel.GetComponent<CanvasRenderer>().SetAlpha(1f);
+            panel.transform.position = Input.mousePosition;
+            GameObject button = panel.GetComponentInChildren<Transform>().Find("First").gameObject;
+            Text text = button.GetComponentInChildren<Text>();
+            text.text = actions[0].First;
+            Button buttonObj = button.GetComponent<Button>();
+            buttonObj.onClick.AddListener(actions[0].Second);
         }
     }
 }

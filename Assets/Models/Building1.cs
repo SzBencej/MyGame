@@ -10,7 +10,7 @@ public class Building1  : Building {
 		buildingIncome = new Resource (1, 0, 1, 0);
 		Id = 1;
         actions.Add("Destroy");
-        actions.Add("Update");
+        //actions.Add("Update");
 	}
 
 

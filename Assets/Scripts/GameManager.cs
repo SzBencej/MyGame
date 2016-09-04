@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class GameManager : MonoBehaviour {
 
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour {
 	private int elapsedTimeInt;
 	private GameModel gameModel;
 	private Text resourceText;
+    private GameObject canvas;
 
 	void Awake() {
 		if (instance == null) {
@@ -17,7 +19,7 @@ public class GameManager : MonoBehaviour {
 		} else if(instance != this) {
 			Destroy (gameObject);
 		}
-
+        canvas = null;
 		elapsedTime = 0f;
 		elapsedTimeInt = 0;
 
@@ -26,8 +28,22 @@ public class GameManager : MonoBehaviour {
 		resourceText = GameObject.Find ("ResourceText").GetComponent<Text>();
 	}
 
-	// Use this for initialization
-	void Start () {
+    internal void AddCanvas(GameObject canvas)
+    {
+        if (this.canvas != null)
+        {
+            throw new Exception("Canvas added twice");
+        }
+        this.canvas = canvas;
+    }
+
+    public GameObject GetCanvas()
+    {
+        return canvas;
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 
