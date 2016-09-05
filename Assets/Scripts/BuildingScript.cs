@@ -67,15 +67,32 @@ public class BuildingScript : MonoBehaviour {
         {
             switch (act)
             {
-                case "Destroy":
+            case "Destroy":
+                {
+                    UnityAction action = delegate ()
                     {
-                        UnityAction action = delegate ()
+                        DestroyBuilding();
+                    };
+                    actions.Add(new Tuple<string, UnityAction>(act, action));
+                    break;
+                 }
+                case "Train":
+                    {
+                        foreach (Unit u in building.GetUnits())
                         {
-                            DestroyBuilding();
-                        };
-                        actions.Add(new Tuple<string, UnityAction>(act, action));
+                            UnityAction action = delegate ()
+                            {
+                                if (GameManager.instance.Affordable(u.GetCost()))
+                                {
+                                    GameManager.instance.DecreaseResource(u.GetCost());
+                                    GameObject unit = Resources.Load("Unit") as GameObject;
+                                    GameObject unitObject = Instantiate(unit);
+                                }
+                            };
+                            actions.Add(new Tuple<string, UnityAction>(act, action));
+                        }
                         break;
-            }
+                    }
             default:
                     throw new Exception("Not handled case in SetBuilding");
             }
@@ -99,6 +116,14 @@ public class BuildingScript : MonoBehaviour {
             text.text = actions[0].First;
             Button buttonObj = button.GetComponent<Button>();
             buttonObj.onClick.AddListener(actions[0].Second);
+            if (actions.Count > 1)
+            {
+                button = panel.GetComponentInChildren<Transform>().Find("Second").gameObject;
+                text = button.GetComponentInChildren<Text>();
+                text.text = actions[1].First;
+                buttonObj = button.GetComponent<Button>();
+                buttonObj.onClick.AddListener(actions[1].Second);
+            }
         }
     }
 }

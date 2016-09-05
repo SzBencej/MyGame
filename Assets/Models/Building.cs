@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Models;
+using System;
 using System.Collections.Generic;
 
 public abstract class Building {
@@ -7,9 +8,12 @@ public abstract class Building {
 	protected Resource buildingCost;
 	protected Resource buildingIncome;
     protected List<String> actions;
+    protected List<Unit> units;
+    protected String name;
 
 	public Building () {
         actions = new List<string>();
+        units = new List<Unit>();
 	}
 
 	public Resource GetCost() {
@@ -27,6 +31,21 @@ public abstract class Building {
     public List<String> GetActions()
     {
         return actions;
+    }
+
+    public String GetName()
+    {
+        return name;
+    }
+
+    public List<Unit> GetUnits()
+    {
+        return units;
+    }
+
+    virtual public Action GetTroopAction()
+    {
+        throw new NotImplementedException();
     }
 
 }
