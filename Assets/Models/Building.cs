@@ -47,6 +47,11 @@ public abstract class Building {
     {
         throw new NotImplementedException();
     }
+    
+    public bool HasTroops()
+    {
+        return units.Count != 0;
+    }
 
 }
 

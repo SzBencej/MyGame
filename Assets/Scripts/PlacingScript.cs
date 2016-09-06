@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BuildingPlacingScript : MonoBehaviour {
+public class PlacingScript : MonoBehaviour {
 
 	private Camera cam;
 
@@ -17,29 +17,25 @@ public class BuildingPlacingScript : MonoBehaviour {
 		placeable = true;
 	}
 	
-	// Update is called once per frame
-	// onright click  remove dragging and remove building
-	void Update () {
-		if (dragged) {
-			Vector3 position = cam.ScreenToWorldPoint (Input.mousePosition); // TODO: utility
-			position.z = 0.0f;
-			transform.position = position;
+    public void SetPlceable(bool val)
+    {
+        placeable = val;
+    }
 
-			if (placeable && Input.GetMouseButtonUp (0)) {
-				dragged = false;
-				placeable = false;
-				GameManager.instance.AddBuilding (gameObject);
-                gameObject.GetComponent<BuildingScript>().Placed = true;
-			} else if (placeable && Input.GetMouseButtonUp(1))
-            {
-                Destroy(gameObject);
-            }
-		}
-	}
+    public void SetDragged(bool val)
+    {
+        dragged = val;
+    }
+	
+	public bool IsDragged()
+    {
+        return dragged;
+    }
 
-	public void setDragged(bool dragged) {
-		this.dragged = dragged;
-	}
+    public bool IsPlaceable()
+    {
+        return placeable;
+    }
 
 
 	void OnTriggerEnter2D (Collider2D other) {

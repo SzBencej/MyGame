@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public GameObject GetBuildingByID(int buildingID) {
-		GameObject building = Resources.Load ("Building") as GameObject;
+		GameObject building = Resources.Load ("Prefabs/Building") as GameObject;
 		if (buildingID == 1) {
 			building.GetComponent<BuildingScript> ().building = new Building1 ();
 		} else if (buildingID == 2) {

@@ -10,6 +10,7 @@ public class BuildingScript : MonoBehaviour {
 
 	public Building building;
     private List<Tuple<string, UnityAction>> actions;
+    private GameObject flag;
     public bool Placed { set; get; }
 
 	public Resource GetCost() {
@@ -24,8 +25,10 @@ public class BuildingScript : MonoBehaviour {
     {
         if (Placed)
         {
-            if (Input.GetMouseButtonDown(0)) // Left click
+            if (Input.GetMouseButtonDown(0)) // Left click, selected
             {
+
+                flag.GetComponent<Renderer>().enabled = true;
                 Color c = gameObject.GetComponent<Renderer>().material.color;
                 if (c.a == 1.0f) // It is not selected
                 {
@@ -34,17 +37,29 @@ public class BuildingScript : MonoBehaviour {
                 }
                 else
                 {
-                    DestroyBuilding();
+                    c.a = 1.0f;
+                    gameObject.GetComponent<Renderer>().material.color = c;
                 }
             }
-            else if (Input.GetMouseButtonDown(1)) // Right click
+            else if (Input.GetMouseButtonDown(1)) // Right click, selected
             {
                 Color c = gameObject.GetComponent<Renderer>().material.color;
                 c.a = 1.0f;
                 gameObject.GetComponent<Renderer>().material.color = c;
                 SetRightClickPanel(true);
+                flag.GetComponent<Renderer>().enabled = true;
             }
 
+        }
+    }
+
+    public void AddFlag()
+    {
+        //if (building.HasTroops())
+        {
+            GameObject FlagObject = Resources.Load("Prefabs/Flag") as GameObject;
+            flag = Instantiate(FlagObject);
+            flag.GetComponent<Renderer>().enabled = false;
         }
     }
 
@@ -52,9 +67,10 @@ public class BuildingScript : MonoBehaviour {
     {
         if (GameManager.instance.Affordable(building.GetCost()))
         {
-            SetRightClickPanel(false);
+            SetRightClickPanel(false); //Move to builiing
             GameManager.instance.DecreaseResource(building.GetCost());
-            GameManager.instance.RemoveBuilding(gameObject);
+            GameManager.instance.RemoveBuilding(gameObject); ;
+            Destroy(flag);
             Destroy(gameObject);
         }
     }
@@ -82,11 +98,15 @@ public class BuildingScript : MonoBehaviour {
                         {
                             UnityAction action = delegate ()
                             {
-                                if (GameManager.instance.Affordable(u.GetCost()))
+                                if (GameManager.instance.Affordable(u.GetCost())) // move to building
                                 {
                                     GameManager.instance.DecreaseResource(u.GetCost());
-                                    GameObject unit = Resources.Load("Unit") as GameObject;
-                                    GameObject unitObject = Instantiate(unit);
+                                    GameObject unit = Resources.Load("Prefabs/Unit") as GameObject;
+
+                                    GameObject unitObject =Instantiate(unit);
+
+                                    unitObject.GetComponent<UnitScript>().unit = u;
+                                    unitObject.GetComponent<MoveTroop>().SetTargetPosition(flag.transform.position);
                                 }
                             };
                             actions.Add(new Tuple<string, UnityAction>(act, action));

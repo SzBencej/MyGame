@@ -28,6 +28,11 @@ namespace Assets.Models
         {
             return this.MemberwiseClone();
         }
+
+        public float GetSpeed()
+        {
+            return speed;
+        }
     }
 
     
