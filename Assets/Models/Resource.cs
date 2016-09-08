@@ -60,7 +60,11 @@ public class Resource
         return this.Gold == item.Gold && this.Iron == item.Iron && this.Water == item.Water && this.ManPower == item.ManPower;
     }
 
+    public override int GetHashCode()
+    {
 
+        return base.GetHashCode();
+    }
     public override string ToString ()
 	{
 		return string.Format ("[Resource: Gold={0}, Iron={1}, Water={2}, ManPower={3}]", Gold, Iron, Water, ManPower);

@@ -19,11 +19,12 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	void Start () {
-        PlaceRandomRocks ();
+        PlaceRandomRocks();
+        gameObject.AddComponent<UnitSelect>();
 	}
 
-	// TODO: array with more rocks or anything
-	public void PlaceRandomRocks() {
+    // TODO: array with more rocks or anything
+    public void PlaceRandomRocks() {
 		// TODO: do not put rocks on each other
 		for (int i = 0; i < numberOfRocks; i++) {
 			float rockX = Random.Range (-boardWidth/2, boardWidth/2);

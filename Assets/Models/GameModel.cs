@@ -14,7 +14,7 @@ public class GameModel {
 	}
 
 	private void InitResources() {
-		resources = new Resource ();
+		resources = new Resource (5,5,5,5);
 	}
 
     // Assume that at the start of the game every building is added to the tree

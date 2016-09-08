@@ -100,13 +100,13 @@ public class BuildingScript : MonoBehaviour {
                             {
                                 if (GameManager.instance.Affordable(u.GetCost())) // move to building
                                 {
-                                    GameManager.instance.DecreaseResource(u.GetCost());
                                     GameObject unit = Resources.Load("Prefabs/Unit") as GameObject;
 
-                                    GameObject unitObject =Instantiate(unit);
+                                    GameObject unitObject = Instantiate(unit);
 
                                     unitObject.GetComponent<UnitScript>().unit = u;
                                     unitObject.GetComponent<MoveTroop>().SetTargetPosition(flag.transform.position);
+                                    GameManager.instance.AddUnit(unitObject);
                                 }
                             };
                             actions.Add(new Tuple<string, UnityAction>(act, action));

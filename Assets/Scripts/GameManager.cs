@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
 	private GameModel gameModel;
 	private Text resourceText;
     private GameObject canvas;
+    private ArrayList units;
 
 	void Awake() {
 		if (instance == null) {
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		
+        units = new ArrayList();
 	}
 
 	void Update() {
@@ -75,6 +76,17 @@ public class GameManager : MonoBehaviour {
 	public void AddBuilding(GameObject gameObject) {
 		gameModel.AddBuilding(gameObject.GetComponent<BuildingScript> ().building);
 	}
+
+    public void AddUnit(GameObject gameObject)
+    {
+        DecreaseResource(gameObject.GetComponent<UnitScript>().unit.GetCost());
+        units.Add(gameObject);
+    }
+
+    public IList GetUnits()
+    {
+        return units;
+    }
 
     public void RemoveBuilding(GameObject gameObject)
     {
