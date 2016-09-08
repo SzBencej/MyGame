@@ -15,6 +15,7 @@ public class MoveTroop : MonoBehaviour {
         needToMove = true;
 
         targetPosition = target;
+        targetPosition.z = 0;
     }
 	
 	// Update is called once per frame
@@ -23,7 +24,6 @@ public class MoveTroop : MonoBehaviour {
         {
             float step = speed * Time.deltaTime;
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, targetPosition, step);
-            Debug.Log(speed);
         }
         if (gameObject.transform.position == targetPosition)
         {

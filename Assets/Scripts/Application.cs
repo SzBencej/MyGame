@@ -10,11 +10,12 @@ public class Application : MonoBehaviour {
         Instantiate(Resources.Load("Prefabs/EventSystem") as GameObject);
         GameObject canvas = Instantiate(Resources.Load("Prefabs/Canvas") as GameObject);
 
-        gameObject.AddComponent<BoardManager>();
+        BoardManager bm = gameObject.AddComponent<BoardManager>();
         gameObject.AddComponent<CameraMoveScript>();
         if (GameManager.instance == null) {
             gameObject.AddComponent<GameManager>();
             GameManager.instance.AddCanvas(canvas);
+            GameManager.instance.bm = bm;
         }
 	}
 

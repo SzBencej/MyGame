@@ -21,12 +21,12 @@ public class FlagScript : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             held = true;
-
+            GameManager.instance.bm.GetComponent<UnitSelect>().canSelect = false;
             gameObject.GetComponent<PlacingScript>().SetPlceable(true);
         } else if (Input.GetMouseButtonUp(0))
         {
             held = false;
-
+            GameManager.instance.bm.GetComponent<UnitSelect>().canSelect = true;
             gameObject.GetComponent<PlacingScript>().SetPlceable(false);
         }
        

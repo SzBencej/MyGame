@@ -8,10 +8,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 22489470}
-  - 58: {fileID: 5894746}
   - 212: {fileID: 21236350}
   - 114: {fileID: 11418110}
   - 114: {fileID: 11471160}
+  - 61: {fileID: 6173798}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -19,8 +19,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!58 &5894746
-CircleCollider2D:
+--- !u!61 &6173798
+BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -32,7 +32,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 45
+  m_Size: {x: 0.97, y: 0.94}
 --- !u!114 &11418110
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -56,6 +56,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b423368619652478c2fd72d309f25a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: 0
 --- !u!212 &21236350
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -32,4 +32,20 @@ public class BoardManager : MonoBehaviour {
 			Instantiate (rock, new Vector3 (rockX, rockY, 0.0f), Quaternion.identity);
 		}
 	}
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("move");
+            GameManager.instance.MoveSelectedUnits(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+          
+        }
+
+
+    }
+
 }

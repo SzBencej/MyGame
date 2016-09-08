@@ -28,17 +28,18 @@ public class BuildingScript : MonoBehaviour {
             if (Input.GetMouseButtonDown(0)) // Left click, selected
             {
 
-                flag.GetComponent<Renderer>().enabled = true;
                 Color c = gameObject.GetComponent<Renderer>().material.color;
                 if (c.a == 1.0f) // It is not selected
                 {
                     c.a = 0.7f;
                     gameObject.GetComponent<Renderer>().material.color = c;
+                    flag.GetComponent<Renderer>().enabled = true;
                 }
                 else
                 {
                     c.a = 1.0f;
                     gameObject.GetComponent<Renderer>().material.color = c;
+                    flag.GetComponent<Renderer>().enabled = false;
                 }
             }
             else if (Input.GetMouseButtonDown(1)) // Right click, selected
@@ -47,7 +48,6 @@ public class BuildingScript : MonoBehaviour {
                 c.a = 1.0f;
                 gameObject.GetComponent<Renderer>().material.color = c;
                 SetRightClickPanel(true);
-                flag.GetComponent<Renderer>().enabled = true;
             }
 
         }
@@ -57,6 +57,7 @@ public class BuildingScript : MonoBehaviour {
     {
         //if (building.HasTroops())
         {
+            Debug.Log("flag");
             GameObject FlagObject = Resources.Load("Prefabs/Flag") as GameObject;
             flag = Instantiate(FlagObject);
             flag.GetComponent<Renderer>().enabled = false;
@@ -69,7 +70,8 @@ public class BuildingScript : MonoBehaviour {
         {
             SetRightClickPanel(false); //Move to builiing
             GameManager.instance.DecreaseResource(building.GetCost());
-            GameManager.instance.RemoveBuilding(gameObject); ;
+            Debug.Log("destroy");
+            GameManager.instance.RemoveBuilding(gameObject);
             Destroy(flag);
             Destroy(gameObject);
         }
@@ -126,16 +128,23 @@ public class BuildingScript : MonoBehaviour {
         {
            panel.SetActive(false);
             panel.GetComponent<CanvasRenderer>().SetAlpha(0f);
-        } else
+            panel.GetComponentInChildren<Transform>().Find("First").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+            panel.GetComponentInChildren<Transform>().Find("Second").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
+        }
+        else
         {
             panel.SetActive(true);
+            panel.GetComponentInChildren<Transform>().Find("First").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+            panel.GetComponentInChildren<Transform>().Find("Second").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+
             panel.GetComponent<CanvasRenderer>().SetAlpha(1f);
             panel.transform.position = Input.mousePosition;
             GameObject button = panel.GetComponentInChildren<Transform>().Find("First").gameObject;
             Text text = button.GetComponentInChildren<Text>();
             text.text = actions[0].First;
             Button buttonObj = button.GetComponent<Button>();
-            buttonObj.onClick.AddListener(actions[0].Second);
+            buttonObj.onClick.AddListener(actions[0].Second); // todo add listener only once
             if (actions.Count > 1)
             {
                 button = panel.GetComponentInChildren<Transform>().Find("Second").gameObject;

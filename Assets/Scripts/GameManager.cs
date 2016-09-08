@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
 	private Text resourceText;
     private GameObject canvas;
     private ArrayList units;
+    public BoardManager bm;
 
 	void Awake() {
 		if (instance == null) {
@@ -57,7 +58,18 @@ public class GameManager : MonoBehaviour {
 		resourceText.text = gameModel.GetResource ().ToString();
 	}
 
-	public GameObject GetBuildingByID(int buildingID) {
+    internal void MoveSelectedUnits(Vector3 mousePosition)
+    {
+        foreach(GameObject unit in units)
+        {
+            if (unit.GetComponent<UnitScript>().selected == true)
+            {
+                unit.GetComponent<MoveTroop>().SetTargetPosition(mousePosition);
+            }
+        }
+    }
+
+    public GameObject GetBuildingByID(int buildingID) {
 		GameObject building = Resources.Load ("Prefabs/Building") as GameObject;
 		if (buildingID == 1) {
 			building.GetComponent<BuildingScript> ().building = new Building1 ();

@@ -39,7 +39,8 @@ public class PlacingScript : MonoBehaviour {
 
 
 	void OnTriggerEnter2D (Collider2D other) {
-		// TODO: refactor
+        // TODO: refactor
+        Debug.Log("enter");
 		Color color = GetComponent<Renderer> ().material.color;
 		color.a = 0.5f;
 		GetComponent<Renderer> ().material.color = color;

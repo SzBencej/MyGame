@@ -24,7 +24,7 @@ namespace UnitTestProject1
         public void TestMethod3()
         {
             m = new GameModel();
-            Resource r = new Resource(1, 1, 1, 1);
+            Resource r = new Resource(6, 5, 5, 5);
             Assert.IsFalse(m.Affordable(r));
             m.NextRound();
             Assert.IsTrue(m.Affordable(r));

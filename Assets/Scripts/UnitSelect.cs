@@ -4,6 +4,7 @@ using System.Collections;
 public class UnitSelect : MonoBehaviour {
 
     bool isSelecting = false;
+    public bool canSelect = true;
     Vector3 mousePosition1;
 
     void Update()
@@ -18,9 +19,9 @@ public class UnitSelect : MonoBehaviour {
         if (Input.GetMouseButtonUp(0))
             isSelecting = false;
 
-        if (isSelecting)
+        if (isSelecting && canSelect)
         {
-            foreach(GameObject unit in GameManager.instance.GetUnits()) {
+            foreach(GameObject unit in GameManager.instance.GetUnits()) { // maybe move to gui
                 if (IsWithinSelectionBounds(unit))
                 {
                     unit.GetComponent<UnitScript>().SetSelected(true);
@@ -34,7 +35,7 @@ public class UnitSelect : MonoBehaviour {
 
     void OnGUI()
     {
-        if (isSelecting)
+        if (isSelecting && canSelect)
         {
             // Create a rect from both mouse positions
             var rect = UnitSelectUtils.GetScreenRect(mousePosition1, Input.mousePosition);
@@ -45,11 +46,11 @@ public class UnitSelect : MonoBehaviour {
 
     public bool IsWithinSelectionBounds(GameObject gameObject)
     {
-        if (!isSelecting)
+        if (!isSelecting || !canSelect)
             return false;
 
-        var camera = Camera.main;
-        var viewportBounds =
+        Camera camera = Camera.main;
+        Bounds viewportBounds =
             UnitSelectUtils.GetViewportBounds(camera, mousePosition1, Input.mousePosition);
 
         return viewportBounds.Contains(
