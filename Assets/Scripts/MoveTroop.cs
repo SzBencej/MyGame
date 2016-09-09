@@ -7,7 +7,7 @@ public class MoveTroop : MonoBehaviour {
 
     public Vector3 targetPosition;
     private float speed;
-    private bool needToMove;
+    private bool needToMove = false;
     private List<Vector3> path;
     private bool first;
     
@@ -28,7 +28,7 @@ public class MoveTroop : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (path.Count != 0)
+        if (needToMove && path.Count != 0)
         {
             float step;
             if (first) { step = 0; first = false; } // first needed because the time.deltatime in the frist time is pretty big
@@ -44,14 +44,14 @@ public class MoveTroop : MonoBehaviour {
                 
                 temppos = Vector3.MoveTowards(gameObject.transform.position, path.ElementAt(i), step);
                 i++;
-            } while (i < path.Count && temppos == path.ElementAt(i-1)); // needed i<=??
+            } while (step != 0 && i < path.Count && temppos == path.ElementAt(i-1)); // needed i<=??
             Debug.Log(i);
             gameObject.transform.position = temppos;
             path.RemoveRange(0, i); // or i+1 or i-1
-        }
-        if (path.Count == 0)
+        } else if (needToMove && path.Count == 0)
         {
             needToMove = false;
+            first = true;
         }
 
     }

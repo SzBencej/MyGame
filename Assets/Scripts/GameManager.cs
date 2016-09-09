@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour {
 
     public List<Vector3> FindPath(GameObject obj, Vector3 position)
     {
-        int num = 1000;
+        int num = 500;
         int num2 = 100;
         float blocksizeX = ((bm.boardHeight*num2) / num);
         float blocksizeY = ((bm.boardWidth*num2) / num);

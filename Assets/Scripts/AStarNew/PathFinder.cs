@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace SimpleAStarExample
+namespace SimpleAStarExample1
 {
     public class PathFinder
     {
@@ -25,7 +25,6 @@ namespace SimpleAStarExample
             this.searchParameters = searchParameters;
             InitializeNodes(searchParameters.Map);
             this.startNode = this.nodes[searchParameters.StartLocation.X, searchParameters.StartLocation.Y];
-            this.startNode.State = NodeState.Open;
             this.endNode = this.nodes[searchParameters.EndLocation.X, searchParameters.EndLocation.Y];
         }
 
@@ -36,23 +35,13 @@ namespace SimpleAStarExample
         public List<Point> FindPath()
         {
             // The start node is the first entry in the 'open' list
-            List<Point> path = new List<Point>();
-            bool success = Search(startNode);
-            if (success)
-            {
-                // If a path was found, follow the parents from the end node to build a list of locations
-                Node node = this.endNode;
-                while (node.ParentNode != null)
-                {
-                    path.Add(node.Location);
-                    node = node.ParentNode;
-                }
 
-                // Reverse the list so it's in the correct order when returned
-                path.Reverse();
-            }
-            Debug.Log(step);
-            return path;
+            Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
+            List<Point> result = new List<Point>();
+            bool success = Search(cameFrom, startNode, result);
+            Debug.Log(success + " " + step);
+            result.Reverse();
+            return result;
         }
 
         /// <summary>
@@ -68,7 +57,7 @@ namespace SimpleAStarExample
             {
                 for (int x = 0; x < this.width; x++)
                 {
-                    this.nodes[x, y] = new Node(x, y, map[x, y], this.searchParameters.EndLocation);
+                    this.nodes[x, y] = new Node(x, y, map[x, y], this.searchParameters.EndLocation, this.searchParameters.StartLocation);
                 }
             }
         }
@@ -78,32 +67,65 @@ namespace SimpleAStarExample
         /// </summary>
         /// <param name="currentNode">The node from which to find a path</param>
         /// <returns>True if a path to the destination has been found, otherwise false</returns>
-        private bool Search(Node currentNode)
+        private bool Search(Dictionary<Node, Node> cameFrom, Node currentNode, List<Point> result)
         {
-            // Set the current node to Closed since it cannot be traversed more than once
-            currentNode.State = NodeState.Closed;
-            List<Node> nextNodes = GetAdjacentWalkableNodes(currentNode);
 
-            // Sort by F-value so that the shortest possible routes are considered first
-            nextNodes.Sort((node1, node2) => node1.F.CompareTo(node2.F));
-            foreach (var nextNode in nextNodes)
+            List<Node> closed = new List<Node>();
+            List<Node> open = new List<Node>();
+            open.Add(currentNode);
+            Dictionary<Node, float> gScore = new Dictionary<Node, float>();
+            gScore.Add(currentNode, 0);
+            Dictionary<Node, float> fScore = new Dictionary<Node, float>();
+            fScore.Add(currentNode, Node.GetTraversalCost(currentNode.Location, endNode.Location));
+
+            while (open.Count != 0)
             {
+
                 step++;
-                // Check whether the end node has been reached
-                if (nextNode.Location == this.endNode.Location)
+                open.Sort((node1, node2) => fScore[node1].CompareTo(fScore[node2]));
+                //Debug.Log(fScore[open.ElementAt(0)] + " " + open.ElementAt(0).Location.X + " " + open.ElementAt(0).Location.Y) ;
+                currentNode = open.ElementAt(0); // if it has 0
+                if (currentNode.Equals(endNode))
                 {
+                   ReconstructPath(cameFrom, currentNode, result);
                     return true;
                 }
-                else
+                open.Remove(currentNode);
+
+                closed.Add(currentNode);
+                List<Node> nextNodes = GetAdjacentWalkableNodes(currentNode);
+                foreach(Node n in nextNodes)
                 {
-                    // If not, check the next set of nodes
-                    if (Search(nextNode)) // Note: Recurses back into Search(Node)
-                        return true;
+                    if (closed.Contains(n))
+                    {
+                        continue;
+                    }
+                    //float tentative_score = gScore[currentNode] + 1;
+                    if (!open.Contains(n))
+                    {
+                        open.Add(n);
+                    } //else if (tentative_score >= -1)
+                    //{
+                   //     continue;
+                    //}
+                    cameFrom[n] = currentNode;
+                    //gScore[n] = tentative_score;
+                    fScore[n] = Node.GetTraversalCost(endNode.Location, n.Location);
                 }
             }
+            
 
-            // The method returns false if this path leads to be a dead end
             return false;
+        }
+
+        private void ReconstructPath(Dictionary<Node, Node> cameFrom, Node currentNode, List<Point> result)
+        {
+            result.Add(currentNode.Location);
+            while(cameFrom.ContainsKey(currentNode))
+            {
+                currentNode = cameFrom[currentNode];
+                result.Add(currentNode.Location);
+            }
         }
 
         /// <summary>
@@ -130,14 +152,14 @@ namespace SimpleAStarExample
                 if (!node.IsWalkable)
                     continue;
 
-                // Ignore already-closed nodes
+               /* // Ignore already-closed nodes
                 if (node.State == NodeState.Closed)
                     continue;
 
                 // Already-open nodes are only added to the list if their G-value is lower going via this route.
                 if (node.State == NodeState.Open)
-                {
-                    float traversalCost = Node.GetTraversalCost(node.Location, node.ParentNode.Location);
+               { 
+                    float traversalCost = Node.GetTraversalCost(node.Location, fromNode.Location);
                     float gTemp = fromNode.G + traversalCost;
                     if (gTemp < node.G)
                     {
@@ -148,10 +170,10 @@ namespace SimpleAStarExample
                 else
                 {
                     // If it's untested, set the parent and flag it as 'Open' for consideration
-                    node.ParentNode = fromNode;
-                    node.State = NodeState.Open;
+                    */
+                   // node.ParentNode = fromNode;
                     walkableNodes.Add(node);
-                }
+                //}
             }
 
             return walkableNodes;
