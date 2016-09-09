@@ -7,7 +7,7 @@ public class BoardManager : MonoBehaviour {
 	private GameObject rock;
 	private int numberOfRocks;
 
-	private float boardHeight,boardWidth;
+	public float boardHeight,boardWidth;
 
 	void Awake() {
         board = (GameObject)Resources.Load("Prefabs/Board", typeof(GameObject));

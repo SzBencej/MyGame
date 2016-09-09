@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using SimpleAStarExample;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
@@ -113,4 +115,40 @@ public class GameManager : MonoBehaviour {
 	public bool Affordable(Resource other) {
 		return gameModel.Affordable(other);
 	}
+
+    public List<Vector3> FindPath(GameObject obj, Vector3 position)
+    {
+        int num = 1000;
+        int num2 = 100;
+        float blocksizeX = ((bm.boardHeight*num2) / num);
+        float blocksizeY = ((bm.boardWidth*num2) / num);
+        bool[,] grid = new bool[num, num];
+        for(int i = 0; i < num; i++)
+        {
+            for (int j = 0; j < num; j++)
+            {
+                grid[i, j] = true;
+            }
+        }
+
+        int startX = (int)((obj.transform.position.x * num2) / blocksizeX);
+        int startY = (int)((obj.transform.position.y * num2) / blocksizeY);
+        Point startPoint = new Point(startX, startY);
+        int endX = (int)((position.x * num2) / blocksizeX);
+        int endY = (int)((position.y * num2) / blocksizeY);
+        Point endPoint = new Point(endX, endY);
+        Debug.Log(startPoint.ToString());
+        Debug.Log(endPoint.ToString());
+        SearchParameters searchParameters = new SearchParameters(startPoint, endPoint, grid);
+        PathFinder pathFinder = new PathFinder(searchParameters);
+        List<Point> path = pathFinder.FindPath();
+        List<Vector3> res = new List<Vector3>();
+        foreach(Point p in path)
+        {
+            Vector3 v = new Vector3((p.X * blocksizeX) /num2, (p.Y * blocksizeY)/num2, 0);
+            res.Add(v);
+        }
+        return res;
+
+    }
 }
