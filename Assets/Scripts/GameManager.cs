@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System;
-using SimpleAStarExample;
+using SimpleAStarExample1;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
@@ -118,8 +118,9 @@ public class GameManager : MonoBehaviour {
 
     public List<Vector3> FindPath(GameObject obj, Vector3 position)
     {
+        Debug.Log("before start");
         int num = 500;
-        int num2 = 100;
+        int num2 = 10000;
         float blocksizeX = ((bm.boardHeight*num2) / num);
         float blocksizeY = ((bm.boardWidth*num2) / num);
         bool[,] grid = new bool[num, num];
@@ -130,7 +131,7 @@ public class GameManager : MonoBehaviour {
                 grid[i, j] = true;
             }
         }
-
+        // calculate once the grid
         int startX = (int)((obj.transform.position.x * num2) / blocksizeX);
         int startY = (int)((obj.transform.position.y * num2) / blocksizeY);
         Point startPoint = new Point(startX, startY);

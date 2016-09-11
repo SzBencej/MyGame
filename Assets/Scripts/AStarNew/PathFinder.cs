@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Priority_Queue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace SimpleAStarExample1
         private Node endNode;
         private SearchParameters searchParameters;
         private int step = 0;
+        private int size = 0;
 
         /// <summary>
         /// Create a new instance of PathFinder
@@ -39,9 +41,19 @@ namespace SimpleAStarExample1
             Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
             List<Point> result = new List<Point>();
             bool success = Search(cameFrom, startNode, result);
-            Debug.Log(success + " " + step);
+            //Debug.Log(success + " " + step);
             result.Reverse();
             return result;
+        }
+
+        public int GetStepCount()
+        {
+            return step;
+        }
+
+        public int GetSizeCount()
+        {
+            return this.size;
         }
 
         /// <summary>
@@ -69,48 +81,63 @@ namespace SimpleAStarExample1
         /// <returns>True if a path to the destination has been found, otherwise false</returns>
         private bool Search(Dictionary<Node, Node> cameFrom, Node currentNode, List<Point> result)
         {
-
-            List<Node> closed = new List<Node>();
-            List<Node> open = new List<Node>();
-            open.Add(currentNode);
-            Dictionary<Node, float> gScore = new Dictionary<Node, float>();
-            gScore.Add(currentNode, 0);
-            Dictionary<Node, float> fScore = new Dictionary<Node, float>();
-            fScore.Add(currentNode, Node.GetTraversalCost(currentNode.Location, endNode.Location));
+            //Debug.Log("start");
+            SimplePriorityQueue<Node> open = new SimplePriorityQueue<Node>();
+            currentNode.F = Node.GetTraversalCost(currentNode.Location, endNode.Location);
+            currentNode.G = 0;
+            open.Enqueue(currentNode, currentNode.F);
+            currentNode.inOpen = true;
 
             while (open.Count != 0)
             {
-
+                if (open.Count > this.size)
+                {
+                    this.size = open.Count;
+                }
                 step++;
-                open.Sort((node1, node2) => fScore[node1].CompareTo(fScore[node2]));
                 //Debug.Log(fScore[open.ElementAt(0)] + " " + open.ElementAt(0).Location.X + " " + open.ElementAt(0).Location.Y) ;
-                currentNode = open.ElementAt(0); // if it has 0
+                currentNode = open.Dequeue() ; // if it has 0
+                // Debug.Log(currentNode.Location);
+                ////List < Node > list = open.GetData(); // minheap is bad...
+                //list.Sort((node1, node2) => node1.F.CompareTo(node2.F));
+                //currentNode = list[0];
+
+                //list.Remove(currentNode);
+                currentNode.inOpen = false;
+                currentNode.inClosed = true;
                 if (currentNode.Equals(endNode))
                 {
                    ReconstructPath(cameFrom, currentNode, result);
                     return true;
                 }
-                open.Remove(currentNode);
-
-                closed.Add(currentNode);
+                
                 List<Node> nextNodes = GetAdjacentWalkableNodes(currentNode);
-                foreach(Node n in nextNodes)
+                int size = nextNodes.Count;
+                for(int i = 0; i < size; i++)
                 {
-                    if (closed.Contains(n))
+                    Node n = nextNodes[i];
+                    if (n.inClosed)
                     {
                         continue;
                     }
-                    //float tentative_score = gScore[currentNode] + 1;
-                    if (!open.Contains(n))
+                    float tentative = currentNode.G + 1;
+                    float newF = tentative + Node.GetTraversalCost(endNode.Location, n.Location) + GetSecondaryHeuristic(n.Location);
+                    
+                    if (!n.inOpen)
                     {
-                        open.Add(n);
-                    } //else if (tentative_score >= -1)
-                    //{
-                   //     continue;
-                    //}
+
+                        //cameFrom[n] = currentNode;
+                        //n.G = tentative;
+                        //n.F = n.G + newF;
+                        open.Enqueue(n, newF);
+                        n.inOpen = true;
+                    } else if (tentative >= n.G)
+                    {
+                        continue;
+                    }
                     cameFrom[n] = currentNode;
-                    //gScore[n] = tentative_score;
-                    fScore[n] = Node.GetTraversalCost(endNode.Location, n.Location);
+                    n.G = tentative;
+                    n.F = newF;
                 }
             }
             
@@ -198,5 +225,16 @@ namespace SimpleAStarExample1
                 new Point(fromLocation.X,   fromLocation.Y-1)
             };
         }
+   
+
+        private float GetSecondaryHeuristic(Point loc) { // needed?
+
+                float dx1 = loc.X - endNode.Location.X;
+            float dy1 = loc.Y - endNode.Location.Y;
+            float dx2 = startNode.Location.X - endNode.Location.X;
+                float dy2 = startNode.Location.Y - endNode.Location.Y;
+                float cross = Math.Abs(dx1 * dy2 - dx2 * dy1); ;
+            return (float)(cross * 0.01);
+            }
     }
 }

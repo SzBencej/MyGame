@@ -8,7 +8,7 @@ namespace SimpleAStarExample1
     /// <summary>
     /// Represents a single node on a grid that is being searched for a path between two points
     /// </summary>
-    public class Node
+    public class Node : IComparable
     {
 
         /// <summary>
@@ -20,6 +20,14 @@ namespace SimpleAStarExample1
         /// True when the node may be traversed, otherwise false
         /// </summary>
         public bool IsWalkable { get; set; }
+
+        public float F;
+
+        public float G;
+
+        public bool inOpen = false;
+
+        public bool inClosed = false;
 
 
         /// <summary>
@@ -48,6 +56,13 @@ namespace SimpleAStarExample1
             float deltaX = otherLocation.X - location.X;
             float deltaY = otherLocation.Y-location.Y;
             return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+        }
+
+
+        public int CompareTo(object obj)
+        {
+            //if (obj == null) { return 1; }
+            return F.CompareTo(((Node)obj).F);
         }
     }
 }

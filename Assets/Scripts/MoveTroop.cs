@@ -21,6 +21,7 @@ public class MoveTroop : MonoBehaviour {
         targetPosition = target;
         targetPosition.z = 0;
         path = new List<Vector3>();
+        Debug.Log("vvv");
         path = GameManager.instance.FindPath(gameObject, targetPosition);
         Debug.Log(path.Count);
         first = true;
