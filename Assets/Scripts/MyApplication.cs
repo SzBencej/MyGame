@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 
 
-    public class Application : MonoBehaviour
+    public class MyApplication : MonoBehaviour
     {
         // Use this for initialization
         void Awake()

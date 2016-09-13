@@ -48,7 +48,7 @@ namespace UnitTestProject1
             TestContext.WriteLine(path.ToString());
             Assert.AreEqual(1001, path.Count);
             //Assert.AreEqual(0, pathFinder.GetStepCount());
-            Assert.AreEqual(0, pathFinder.GetSizeCount());
+            //Assert.AreEqual(0, pathFinder.GetSizeCount());
         }
 
         [TestMethod]
