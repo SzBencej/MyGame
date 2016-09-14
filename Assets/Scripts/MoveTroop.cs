@@ -8,9 +8,6 @@ public class MoveTroop : MonoBehaviour {
 
     //public Vector3 targetPosition;
     private float speed;
-    private bool needToMove = false;
-    private bool first;
-    private Vector3 lastPos;
 
     public Vector3 target;
 
@@ -57,6 +54,7 @@ public class MoveTroop : MonoBehaviour {
 
         if (currentWaypoint >= path.vectorPath.Count)
         {
+            GetComponent<Animator>().SetBool("MovingUp", false);
             //Debug.Log("End Of Path Reached");
             Debug.Log(path.vectorPath[path.vectorPath.Count - 1]);
             path = null;
@@ -99,9 +97,7 @@ public class MoveTroop : MonoBehaviour {
         speed = gameObject.GetComponent<UnitScript>().unit.GetSpeed();
         //Start a new path to the targetPosition, return the result to the OnPathComplete function
         seeker.StartPath(transform.position, this.target, OnPathComplete);
-
-
-
+        GetComponent<Animator>().SetBool("MovingUp", true);
 
         /*
 
